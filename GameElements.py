@@ -7,6 +7,13 @@ import random;
 #   - Se o player for um robo, o sistema interno vai calcular sua jogada
 #   - Em todo caso, o sistema interno retorna o desenho do tabuleiro após a nova jogada
 
+def contains(lista : list, point : tuple):
+    line, column = point;
+    for each in lista:
+        if (each[0] == line) and (each[1] == column):
+            return True;
+    return False;
+
 class State():
 
     def __init__(self, first_player, matriz_creation : MatrizQuadrada | None = None):
@@ -24,10 +31,13 @@ class State():
 
         self.terminal = aux["final"];
         self.value = self.valorSimbolo(aux["simbol"]);
+        self.victorySimbol = aux["simbol"];
         self.victory_type = aux["type"]; 
         self.ref_number = aux["ref_number"];
         self.count_o = aux["count_o"];
         self.count_x = aux["count_x"];
+        self.endgame_type = aux["type"];
+        self.endgame_ref = aux["ref_number"];
         return aux;
     
     def turn(self):
@@ -109,8 +119,9 @@ class State():
 class Game():
     #Um jogo possui dois jogadores e um tabuleiro
     def __init__(self, modo = 1, player_simbol = "O", initial_state : list = None, first_player : str = None):
-        
-        if initial_state == None:
+        self.winner = None;
+
+        if initial_state == None:   
             self.turn = self.firstToPlay();
             self.state = State(self.turn);        
         else:
@@ -132,13 +143,15 @@ class Game():
         return self.state.corpo.tabuleiro; #Retorna a matriz quadrada que representa o estado atual do state
 
     def play(self, linha: int, coluna: int):
-        isPossible = self.state.put(self.turn, linha, coluna);
-
-        if isPossible:
+        if self.can_play(linha, coluna):
+            self.state.put(self.turn, linha, coluna);
             self.alternateTurn();
-            return("Jogada realizada com sucesso!")
+            return True;
         else:
-            return("Essa jogada não é possivel! Já jogaram ai!");
+            return False;
+
+    def can_play(self, linha : int, coluna : int):
+        return self.state.corpo.tabuleiro.get(linha, coluna) == ' ';
 
     def changeState(self, next_state : State):
         self.state = next_state;
@@ -150,6 +163,7 @@ class Game():
 
     def isOver(self):
         self.state.initializeState();
+        self.winner = self.state.victorySimbol;
         return self.state.terminal;
 
     def alternateTurn(self):
@@ -158,14 +172,33 @@ class Game():
         else:
             self.turn = "O";
 
-class Player():
+    def get_value(self, line, column):
+        return self.state.corpo.tabuleiro.get(line, column);
 
-    def __init__(self, partida: Game, simbol: str, human = True):
-        self.partida = partida;
-        self.simbol = simbol;
-        self.human = human;
+    def check_play(self, line, column):
+        if (self.get_value(line, column) != ' '):
+            return True;
+        return False;
+    
+    def machine_play(game_state : "Game"):
+        min = 2;
+        max = -2;
+        max_play = None;
+        min_play = None;
 
-    def play(self, linha = None, coluna = None):
-        self.partida.state.tabuleiro.put(linha, coluna);
-        return self.partida.tabuleiroAtual();
+        turno = game_state.turn;
+        for each in game_state.state.actions(turno):
+            value = each.minimax();
+            
+            if turno == "O" and value >= max:
+                max = value;
+                max_play = each;
+            elif turno == "X" and value <= min:
+                min = value;
+                min_play = each;
+        
+        if game_state.turn == "O":
+            return max_play;
+        else:
 
+            return min_play;

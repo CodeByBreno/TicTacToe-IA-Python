@@ -4,15 +4,18 @@ sys.path.append("..")  # Adiciona o diretório pai ao caminho de pesquisa
 from GameElements import *;
 import random;
 
+turn = 0;
 new_game = Game();
 new_game.play(random.randint(0,2), random.randint(0,2));
 
 while(True):
+    turn += 1;
     min = 2;
     max = -2;
     max_play = None;
     min_play = None;
     
+    print("------------- Turno " + str(turn) + " --------------");
     print(new_game.show());
 
     if new_game.isOver():

@@ -38,6 +38,13 @@ class TabuleiroTicTacToe:
                 return False;
         return True;
 
+    def tilePlayed(t1 : "TabuleiroTicTacToe", t2 : "TabuleiroTicTacToe"):
+        for i in range(0, 9):
+            if (t1.tabuleiro.corpo[i] != t2.tabuleiro.corpo[i]):
+                return i // 3, i % 3;
+
+        
+
 #Analisa a estrutura atual do tabuleiro passado como parâmetro na criação
 #Determina tudo que tem de relevante em uma única rodada de código
 # - Se o tabuleiro está em um estado final ou não
@@ -146,5 +153,6 @@ class AnalisadorTabuleiro():
         else:
             return {"final": True,   
                     "simbol": "%", 
-                    "type": "Toe", 
+                    "type": "toe", 
                     "ref_number": None}; 
+
