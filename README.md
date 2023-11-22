@@ -1,5 +1,5 @@
 # 🕹️ Jogo da Velha com Python
-Esse jogo foi desenvolvido para colocar em prática o algoritmo Minimax, com o qual a máquina joga, e praticar conceitos da linguagem Python e a biblioteca Tkinter
+Esse jogo foi desenvolvido para colocar em prática o algoritmo Minimax, com o qual a máquina joga, e praticar conceitos da linguagem Python e a biblioteca Tkinter.
 As artes foram produzidas por mim mesmo, usando Adobe Illustrator (inclusive a fonte kkkkkk)
 
 # ⚙️ Como Executar o Projeto?
